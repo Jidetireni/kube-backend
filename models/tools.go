@@ -184,8 +184,8 @@ func ExecIntoContainer(clientset *kubernetes.Clientset, config *rest.Config, app
 		SubResource("exec").
 		VersionedParams(&corev1.PodExecOptions{
 			Container: fmt.Sprintf("%s-container", appName),
-			Command:   []string{"/bin/bash", "-c", "cd /scripts && chmod +x setup.sh && ./setup.sh"},
-			Stdin:     false,
+			Command:   []string{"sh", "-c", "cd /scripts && chmod +x setup.sh && ./setup.sh"},
+			Stdin:     true, // Required for exec to work correctly
 			Stdout:    true,
 			Stderr:    true,
 			TTY:       false,
@@ -204,9 +204,9 @@ func ExecIntoContainer(clientset *kubernetes.Clientset, config *rest.Config, app
 	// Capture stdout and stderr
 	var stdout, stderr bytes.Buffer
 	err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
+		Stdin:  os.Stdin, // Fix: Ensure stdin is specified
 		Stdout: &stdout,
 		Stderr: &stderr,
-		Stdin:  os.Stdin,
 		Tty:    false,
 	})
 
@@ -216,5 +216,4 @@ func ExecIntoContainer(clientset *kubernetes.Clientset, config *rest.Config, app
 	}
 
 	return stdout.String(), stderr.String(), nil
-
 }
