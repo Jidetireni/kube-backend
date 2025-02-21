@@ -120,6 +120,7 @@ func DeployPodsAndServices(clientset *kubernetes.Clientset, namespace, projectNa
 							MountPath: "/scripts",
 						},
 					},
+					Command: []string{"python", "-c", "import time; time.sleep(999999)"},
 				},
 			},
 			Volumes: []corev1.Volume{
