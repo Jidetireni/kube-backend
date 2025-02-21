@@ -206,6 +206,7 @@ func ExecIntoContainer(clientset *kubernetes.Clientset, config *rest.Config, app
 	err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 		Stdout: &stdout,
 		Stderr: &stderr,
+		Stdin:  os.Stdin,
 		Tty:    false,
 	})
 
