@@ -119,7 +119,7 @@ func Testk8s(c *gin.Context) {
 
 	log_output, log_error, err := models.ExecIntoContainer(clientset, config, appName, ns)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute test"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute test", "msg": err.Error()})
 		return
 	}
 
